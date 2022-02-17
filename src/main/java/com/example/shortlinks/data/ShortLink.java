@@ -1,9 +1,6 @@
 package com.example.shortlinks.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
@@ -11,6 +8,7 @@ import java.sql.Date;
 public class ShortLink {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "hash")
@@ -33,6 +31,7 @@ public class ShortLink {
     }
 
     public void incrementNumberOfClicks(){
+        System.out.println("Incremented\n");
         numberOfClicks++;
     }
 
