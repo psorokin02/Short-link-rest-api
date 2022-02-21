@@ -1,12 +1,10 @@
 package com.example.shortlinks.controller;
 
-import com.example.shortlinks.data.ShortLink;
-import com.example.shortlinks.linkService.LinkService;
+import com.example.shortlinks.model.ShortLink;
+import com.example.shortlinks.service.LinkService;
 import com.example.shortlinks.security.token.TokenProvider;
-import com.example.shortlinks.security.user.User;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/nord")
@@ -16,6 +14,7 @@ public class LinkController {
     TokenProvider tokenProvider;
 
     @GetMapping(path = "/{hash}")
+    @PreAuthorize("hasAuthority('links:read')")
     public String getOriginalURL(@PathVariable String hash){
         ShortLink link = linkService.getShortLinkByHash(hash); //null handling needed
         if(link == null){
@@ -27,6 +26,7 @@ public class LinkController {
     }
 
     @PostMapping (path = "/")
+    @PreAuthorize("hasAuthority('links:write')")
     public String addURL(@RequestBody String URL){
         ShortLink link = linkService.getShortLinkByURL(URL);
         if(link == null){

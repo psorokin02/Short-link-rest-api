@@ -1,13 +1,12 @@
-package com.example.shortlinks.linkDAO;
+package com.example.shortlinks.model;
 
-import com.example.shortlinks.data.ShortLink;
+import com.example.shortlinks.model.ShortLink;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository

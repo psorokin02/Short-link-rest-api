@@ -1,6 +1,6 @@
-package com.example.shortlinks.linkDAO;
+package com.example.shortlinks.model;
 
-import com.example.shortlinks.data.ShortLink;
+import com.example.shortlinks.model.ShortLink;
 
 public interface LinkDAO {
     public ShortLink getLinkByHash(String hash);

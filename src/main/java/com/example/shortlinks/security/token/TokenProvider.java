@@ -1,28 +1,35 @@
 package com.example.shortlinks.security.token;
 
+import com.example.shortlinks.security.UserAuthenticationException;
+import com.example.shortlinks.security.user.MyUserDetails;
 import com.example.shortlinks.security.user.User;
 import com.example.shortlinks.security.user.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class TokenProvider {
     private UserService userService;
-    private TokenHashCoder tokenHashCoder;
 
-    public TokenProvider(UserService userService, TokenHashCoder tokenHashCoder) {
+    public TokenProvider(UserService userService) {
         this.userService = userService;
-        this.tokenHashCoder = tokenHashCoder;
     }
 
-    public String createToken(User user, HttpServletRequest request){
+    public UserToken createToken(User user, HttpServletRequest request){
         StringBuilder builder = new StringBuilder();
         Map<String, String[]> params = request.getParameterMap();
 
-        System.out.println(params.toString());
+        System.out.println(params.toString());//
+
         params.forEach((key, valuesArray) -> {
             Arrays.stream(valuesArray).forEach(
                     value -> builder.append(key).append("=").append(value).append("&")
@@ -31,25 +38,16 @@ public class TokenProvider {
         builder.append("secret").append("=").append(user.getSecret());
 
         System.out.println("params = " + builder);
-        return tokenHashCoder.createToken(builder.toString());
+
+        return new UserToken(user.getId(), new BCryptPasswordEncoder().encode(builder.toString()));
     }
 
     public boolean validateToken(UserToken token){
         UserToken userToken = userService.getUserTokenById(token.getId());
-        if(userToken == null || !userToken.getToken().equals(token.getToken())){
-            return false;
+        if(userToken == null){
+            throw new UserAuthenticationException("Authentication failed", HttpStatus.UNAUTHORIZED);
         }
-
-        String data = tokenHashCoder.decodeToken(token.getToken());
-        String[] params = data.split("&");
-        String[] secret = params[params.length-1].split("=");
-
-        if(secret.length != 2){
-            return false;
-        }
-
-        User user = userService.getUserById(token.getId());
-        return secret[0].equals("secret") && secret[1].equals(user.getSecret());
+        return token.getToken().equals(token.getToken());
     }
 
     public UserToken resolveToken(HttpServletRequest request) {
@@ -59,5 +57,14 @@ public class TokenProvider {
         String token =  request.getParameter("token");
         Long id = Long.valueOf(request.getParameter("id"));
         return new UserToken(id,token);
+    }
+
+    public Authentication getAuthentication(UserToken token) throws Exception {
+        User user= userService.getUserById(token.getId());
+        if(user == null){
+            throw new Exception("wtf");
+        }
+        UserDetails userDetails = new MyUserDetails(user);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }

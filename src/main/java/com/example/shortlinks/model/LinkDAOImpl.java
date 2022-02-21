@@ -1,4 +1,4 @@
-package com.example.shortlinks.linkDAO;
+package com.example.shortlinks.model;
 
 //public class LinkDAOImpl implements LinkDAO{
 //    @Override

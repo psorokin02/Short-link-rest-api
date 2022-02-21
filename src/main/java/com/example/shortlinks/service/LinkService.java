@@ -1,8 +1,8 @@
-package com.example.shortlinks.linkService;
+package com.example.shortlinks.service;
 
-import com.example.shortlinks.data.ShortLink;
+import com.example.shortlinks.model.ShortLink;
 import com.example.shortlinks.hashcode.URLHashCoder;
-import com.example.shortlinks.linkDAO.LinkDAO;
+import com.example.shortlinks.model.LinkDAO;
 import org.springframework.stereotype.Service;
 
 @Service

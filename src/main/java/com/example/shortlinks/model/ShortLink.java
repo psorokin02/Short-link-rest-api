@@ -1,4 +1,4 @@
-package com.example.shortlinks.data;
+package com.example.shortlinks.model;
 
 import javax.persistence.*;
 import java.sql.Date;

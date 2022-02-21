@@ -22,6 +22,12 @@ public class User {
         this.secret = secret;
     }
 
+
+    public User(MyUserDetails userDetails){
+        this.id = userDetails.getId();
+        this.secret = userDetails.getPassword();
+    }
+
     public Long getId() {
         return id;
     }

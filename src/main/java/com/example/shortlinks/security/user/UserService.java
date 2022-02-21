@@ -28,18 +28,6 @@ public class UserService {
         tokenRepository.save(token);
     }
 
-    public boolean authenticate(User user){
-        try{
-            User tmp = getUserById(user.getId());
-            System.out.println(tmp.getId());
-            System.out.println(tmp.getSecret());
-            return tmp.getSecret().equals(user.getSecret());
-        }
-        catch (Exception e){
-            return false;
-        }
-    }
-
 //    public boolean checkUserToken(Long id, String token){
 //        UserToken userToken = getUserTokenById(id);
 //        return userToken != null && userToken.getToken().equals(token);
