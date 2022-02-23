@@ -52,8 +52,12 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) throws MyAuthenticationException{
         log.info("validating jwt token: {}", token);
+
+        if(token == null){
+            throw new MyAuthenticationException("cannot identify token");
+        }
 
         String[] chunks = token.split("\\.");
         if(chunks.length != 3){
