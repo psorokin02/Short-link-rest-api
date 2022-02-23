@@ -29,11 +29,13 @@ public class User {
     @Column(name = "created")
     private Date creationDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "status_id")
     private UserStatus status;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id",referencedColumnName = "id")}
@@ -41,6 +43,14 @@ public class User {
     private List<Role> roles;
 
     public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.creationDate = new Date(System.currentTimeMillis());
+        this.status = new UserStatus("ACTIVE");
+        this.roles = List.of(new Role("USER"));
     }
 
     @Override
